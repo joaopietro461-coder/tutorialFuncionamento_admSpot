@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Como registrar uma conta a receber no AdmSpot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Sora:wght@700;800&display=swap">
+<style>
+:root{
+  --blue:#00357A;--ink:#27313D;--muted:#6B7686;--border:#E8EDF3;
+  --teal:#00DBB2;--mint:#E6FBF6;--ease:cubic-bezier(.22,1,.36,1);
+  --w:220px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#F5F8FB;font:15px/1.6 Inter,system-ui,-apple-system,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.guia{max-width:960px;margin:0 auto;padding:56px 20px 72px}
+.guia-selo{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:var(--blue);background:var(--mint);border:1px solid var(--teal);border-radius:100px;padding:6px 14px}
+.guia h1{font-family:Sora,Inter,sans-serif;color:var(--blue);font-size:26px;line-height:1.2;letter-spacing:-.02em;margin:14px 0 8px}
+@media (min-width:720px){.guia h1{font-size:32px}}
+.guia-sub{margin:0;color:var(--muted)}
+.guia-progresso{height:4px;background:var(--border);border-radius:4px;overflow:hidden;margin:20px 0 8px}
+.guia-progresso span{display:block;height:100%;width:20%;background:var(--teal);border-radius:4px;transition:width .5s var(--ease)}
+.guia-contador{font-size:13px;color:var(--muted);font-weight:600;margin:0 0 18px}
+.guia-passo-titulo{font-family:Sora,Inter,sans-serif;color:var(--blue);font-size:20px;margin:0 0 6px}
+.guia-passo-texto{margin:0 0 18px}
+
+/* Quadro da tela: acompanha o tamanho real da imagem, sem cortar */
+.guia-tela{position:relative;border-radius:16px;border:1px solid var(--border);box-shadow:0 18px 40px rgba(0,53,122,.12);background:#fff;padding:0}
+.guia-tela img{display:block;width:100%;height:auto;border-radius:15px;opacity:0;transition:opacity .45s var(--ease)}
+.guia-tela img.ativa{opacity:1}
+
+/* Ponto de destaque e balão */
+.guia-ponto{position:absolute;width:0;height:0;z-index:2}
+.guia-dot{position:absolute;left:-13px;top:-13px;width:26px;height:26px;border-radius:50%;background:var(--teal);color:var(--blue);border:2px solid #fff;font:800 12px Inter,sans-serif;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,53,122,.35);animation:guiaEntra .5s var(--ease) both;animation-delay:var(--d,0s)}
+.guia-dot::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid var(--teal);animation:guiaPulso 1.8s var(--ease) infinite;animation-delay:var(--d,0s)}
+
+.guia-pos{position:absolute;z-index:3}
+.guia-pos.d-baixo{top:22px;left:50%;transform:translateX(-50%)}
+.guia-pos.d-cima{bottom:22px;left:50%;transform:translateX(-50%)}
+.guia-pos.d-dir{left:22px;top:50%;transform:translateY(-50%)}
+.guia-pos.d-esq{right:22px;top:50%;transform:translateY(-50%)}
+
+.guia-bolha{position:relative;width:var(--w);background:#fff;border:2px solid var(--teal);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;color:var(--blue);line-height:1.4;box-shadow:0 10px 24px rgba(0,53,122,.18);animation:guiaEntra .5s var(--ease) both;animation-delay:calc(var(--d,0s) + .15s);transform-origin:center}
+.guia-bolha p{margin:0}
+.guia-bolha::after{content:"";position:absolute;width:0;height:0;border:8px solid transparent}
+.d-baixo .guia-bolha::after{top:-18px;left:50%;margin-left:-8px;border-bottom-color:var(--teal)}
+.d-cima .guia-bolha::after{bottom:-18px;left:50%;margin-left:-8px;border-top-color:var(--teal)}
+.d-dir .guia-bolha::after{left:-18px;top:50%;margin-top:-8px;border-right-color:var(--teal)}
+.d-esq .guia-bolha::after{right:-18px;top:50%;margin-top:-8px;border-left-color:var(--teal)}
+
+@keyframes guiaEntra{
+  from{opacity:0;transform:scale(.8)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes guiaPulso{
+  0%{transform:scale(.85);opacity:1}
+  100%{transform:scale(1.6);opacity:0}
+}
+
+.guia-controles{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+.guia-btn{background:var(--teal);color:var(--blue);border:0;border-radius:10px;padding:12px 26px;font:700 14px Inter,sans-serif;cursor:pointer;transition:transform .2s var(--ease),box-shadow .3s ease,opacity .3s ease}
+.guia-btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,219,178,.35)}
+.guia-btn:active{transform:scale(.97)}
+.guia-btn:disabled{opacity:.4;pointer-events:none}
+.guia-btn.sec{background:#fff;color:var(--blue);border:1.5px solid var(--blue)}
+.guia-btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.guia-pontinhos{display:flex;gap:8px}
+.guia-pontinhos i{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .3s ease,width .3s var(--ease)}
+.guia-pontinhos i.ativo{background:var(--teal);width:22px;border-radius:6px}
+
+#guiaCal{font:600 13px Inter,sans-serif;color:var(--blue);background:var(--mint);border-radius:8px;padding:8px 12px;margin:12px 0 0}
+
+@media (max-width:719px){
+  :root{--w:165px}
+  .guia-bolha{font-size:11.5px;padding:8px 10px}
+  .guia-btn{padding:11px 18px}
+}
+@media (prefers-reduced-motion:reduce){
+  .guia-dot,.guia-dot::after,.guia-bolha{animation:none!important}
+  .guia-tela img,.guia-btn,.guia-progresso span{transition:none!important}
+}
+
+/* Visual da página: não altera os balões, as imagens nem os textos */
+body{
+  background:
+    radial-gradient(circle at 12% 8%, rgba(0,219,178,.14), transparent 38%),
+    radial-gradient(circle at 92% 92%, rgba(0,53,122,.10), transparent 42%),
+    radial-gradient(rgba(0,53,122,.07) 1px, transparent 1px) 0 0/22px 22px,
+    #F5F8FB;
+  min-height:100vh;
+}
+.guia{
+  background:#fff;
+  border-radius:24px;
+  box-shadow:0 24px 60px rgba(0,53,122,.10), 0 2px 6px rgba(0,53,122,.04);
+  margin-top:40px;
+  margin-bottom:40px;
+  padding-left:clamp(20px,4vw,48px);
+  padding-right:clamp(20px,4vw,48px);
+}
+.guia-selo{box-shadow:0 4px 14px rgba(0,219,178,.18)}
+.guia-btn{letter-spacing:.2px}
+@media (max-width:719px){
+  .guia{margin-top:16px;margin-bottom:16px;border-radius:18px}
+}
+</style>
+</head>
+<body>
+
+<main class="guia" id="guia" tabindex="-1">
+  <span class="guia-selo">Veja como funciona</span>
+  <h1>Como registrar uma conta a receber no AdmSpot</h1>
+  <p class="guia-sub">Siga os 5 passos com o botão Próximo.</p>
+
+  <div class="guia-progresso" aria-hidden="true"><span id="guiaBarra"></span></div>
+  <p class="guia-contador" id="guiaContador" aria-live="polite">Passo 1 de 5</p>
+
+  <h2 class="guia-passo-titulo" id="guiaTitulo"></h2>
+  <p class="guia-passo-texto" id="guiaTexto"></p>
+
+  <div class="guia-tela" id="guiaTela">
+    <img id="guiaImg" alt="" src="">
+  </div>
+  <p id="guiaCal" hidden></p>
+
+  <div class="guia-controles">
+    <button type="button" class="guia-btn sec" id="guiaVoltar">Voltar</button>
+    <div class="guia-pontinhos" id="guiaPontinhos" aria-hidden="true"></div>
+    <button type="button" class="guia-btn" id="guiaProximo">Próximo</button>
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  /*
+    dir = onde o balão aparece em relação ao ponto: "baixo", "cima", "dir" ou "esq"
+    x = posição horizontal do ponto (% da largura da imagem)
+    y = posição vertical do ponto (% da altura da imagem)
+
+    Para ajustar: abra a página com ?calibrar no endereço, clique no alvo na tela
+    e use os valores de x e y mostrados abaixo da imagem.
+  */
+  var passos = [
+    {
+      img: "assets/Passo1_apresentacaoPainel-inicial_-_Copia.png",
+      titulo: "Conheça o painel inicial",
+      texto: "A tela Painel mostra o resumo financeiro da empresa.",
+      pontos: [
+        { x: 10.4,  y: 20.7, dir: "dir",   texto: "Menu lateral: aqui ficam os painéis e funcionalidades do sistema." },
+        { x: 49.8, y: 33.3, dir: "baixo", texto: "Resumo financeiro do mês." }
+      ]
+    },
+    {
+      img: "assets/Passo2_apresentacaoBotao-financeiro.png",
+      titulo: "Acesse o módulo Financeiro",
+      texto: "No topo da tela Painel, clique no botão Financeiro.",
+      pontos: [
+        { x: 90.3, y: 13.5,  dir: "baixo", texto: "Clique no botão Financeiro." },
+        { x: 42.3, y: 72.5, dir: "cima",  texto: "Gráfico de receitas e despesas dos últimos 6 meses." }
+      ]
+    },
+    {
+      img: "assets/Passo3_apresentacaoPainel-financeiro.png",
+      titulo: "Abra Contas a receber",
+      texto: "No menu lateral, em Financeiro, escolha Contas a receber e use os filtros para localizar lançamentos.",
+      pontos: [
+        { x: 18.1,  y: 68.4, dir: "dir",   texto: "Em Financeiro, abra Contas a receber." },
+        { x: 83, y: 41.6, dir: "baixo", texto: "Use os filtros para localizar lançamentos." },
+        { x: 83.9, y: 13.5, dir: "esq",   texto: "Clique aqui para registrar uma nova conta a receber." }
+      ]
+    },
+    {
+      img: "assets/Passo4_apresentacaoRegistrarConta-Receber.png",
+      titulo: "Clique em Nova conta a receber",
+      texto: "Esse botão abre o formulário de novo lançamento.",
+      pontos: [
+        { x: 56.8, y: 14.6, dir: "esq",   texto: "Os registros financeiros do mês aparecem aqui de uma forma clara, para seu entendimento." },
+        { x: 81.0, y: 57.0, dir: "baixo", texto: "Os lançamentos cadastrados aparecem nesta lista." }
+      ]
+    },
+    {
+      img: "assets/Passo5_Painel-RegistroContaAreceber.png",
+      titulo: "Preencha e salve o lançamento",
+      texto: "Preencha os campos da janela Nova conta a receber e clique em Salvar.",
+      pontos: [
+        { x: 64.0,   y: 20.6,   dir: "esq",  texto: "Informe o nome do lançamento." },
+        { x: 64.0, y: 38.0, dir: "esq",  texto: "Preencha o valor." },
+        { x: 94.9, y: 38.4, dir: "dir",  texto: "Escolha a data de vencimento." },
+        { x: 64.0,   y: 73.0, dir: "esq",  texto: "Escolha se a conta é única, parcelada ou fixa." },
+        { x: 95.7, y: 95.5, dir: "cima", texto: "Clique em Salvar para registrar a conta." }
+      ]
+    }
+  ];
+
+  var total = passos.length;
+  var atual = 0;
+  var CAL = /calibrar/.test(window.location.search);
+
+  var tela      = document.getElementById("guiaTela");
+  var img       = document.getElementById("guiaImg");
+  var titulo    = document.getElementById("guiaTitulo");
+  var texto     = document.getElementById("guiaTexto");
+  var barra     = document.getElementById("guiaBarra");
+  var contador  = document.getElementById("guiaContador");
+  var pontinhos = document.getElementById("guiaPontinhos");
+  var btnProx   = document.getElementById("guiaProximo");
+  var btnVolt   = document.getElementById("guiaVoltar");
+  var guia      = document.getElementById("guia");
+  var cal       = document.getElementById("guiaCal");
+
+  for (var k = 0; k < total; k++) {
+    pontinhos.appendChild(document.createElement("i"));
+  }
+
+  function limparPontos(){
+    tela.querySelectorAll(".guia-ponto").forEach(function(el){ el.remove(); });
+  }
+
+  function desenharPontos(p){
+    limparPontos();
+    p.pontos.forEach(function(pt, i){
+      var ponto = document.createElement("div");
+      ponto.className = "guia-ponto";
+      ponto.style.left = pt.x + "%";
+      ponto.style.top  = pt.y + "%";
+      ponto.style.setProperty("--d", (0.3 + i * 0.25) + "s");
+
+      var dot = document.createElement("span");
+      dot.className = "guia-dot";
+      dot.textContent = String(i + 1);
+
+      var pos = document.createElement("div");
+      pos.className = "guia-pos d-" + pt.dir;
+
+      var bolha = document.createElement("div");
+      bolha.className = "guia-bolha";
+      var p1 = document.createElement("p");
+      p1.textContent = pt.texto;
+      bolha.appendChild(p1);
+      pos.appendChild(bolha);
+
+      ponto.appendChild(dot);
+      ponto.appendChild(pos);
+      tela.appendChild(ponto);
+    });
+  }
+
+  // Quando a imagem carrega, o quadro já tem o tamanho certo e os pontos são desenhados
+  img.addEventListener("load", function(){
+    img.classList.add("ativa");
+    desenharPontos(passos[atual]);
+  });
+
+  function mostrar(i){
+    atual = Math.max(0, Math.min(total - 1, i));
+    var p = passos[atual];
+
+    img.classList.remove("ativa");
+    limparPontos();
+    img.alt = "Tela " + (atual + 1) + ": " + p.titulo;
+    img.src = p.img;
+
+    titulo.textContent = p.titulo;
+    texto.textContent  = p.texto;
+    contador.textContent = "Passo " + (atual + 1) + " de " + total;
+    barra.style.width = ((atual + 1) / total * 100) + "%";
+
+    Array.prototype.forEach.call(pontinhos.children, function(b, j){
+      b.classList.toggle("ativo", j === atual);
+    });
+
+    btnVolt.disabled = atual === 0;
+    btnProx.textContent = atual === total - 1 ? "Concluir" : "Próximo";
+  }
+
+  btnProx.addEventListener("click", function(){
+    if (atual === total - 1) { mostrar(0); return; }
+    mostrar(atual + 1);
+  });
+  btnVolt.addEventListener("click", function(){ mostrar(atual - 1); });
+
+  guia.addEventListener("keydown", function(e){
+    if (e.key === "ArrowRight") btnProx.click();
+    if (e.key === "ArrowLeft" && !btnVolt.disabled) btnVolt.click();
+  });
+
+  // Modo calibração: ?calibrar no endereço. Clique em um alvo para ver x e y.
+  if (CAL) {
+    cal.hidden = false;
+    cal.textContent = "Modo calibração: clique em um alvo na tela.";
+    tela.addEventListener("click", function(e){
+      if (e.target !== img) return;
+      var r = img.getBoundingClientRect();
+      var x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
+      var y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
+      cal.textContent = "Passo " + (atual + 1) + " → x: " + x + ", y: " + y;
+    });
+  }
+
+  mostrar(0);
+})();
+</script>
+</body>
+</html>
